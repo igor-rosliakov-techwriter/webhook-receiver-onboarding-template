@@ -19,7 +19,7 @@ architecture docs, runbooks, and ADRs can be structured in a real-world backend 
 
 ## Documentation map
 
-Start here: `docs/index.md`
+Start here: [docs/index.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/index.md(
 
 Suggested reading order for onboarding:
 1) `docs/onboarding/00-overview.md`
