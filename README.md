@@ -22,10 +22,10 @@ architecture docs, runbooks, and ADRs can be structured in a real-world backend 
 Start here: [docs/index.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/index.md)
 
 Suggested reading order for onboarding:
-1) `docs/onboarding/00-overview.md`
-2) `docs/onboarding/01-local-setup.md`
-3) `docs/onboarding/02-first-task.md`
-4) `docs/onboarding/03-common-pitfalls.md`
+1) [docs/onboarding/00-overview.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/00-overview.md)
+2) [docs/onboarding/01-local-setup.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/01-local-setup.md)
+3) [docs/onboarding/02-first-task.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/02-first-task.md)
+4) [docs/onboarding/03-common-pitfalls.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/03-common-pitfalls.md)
 
 ## Scope
 
