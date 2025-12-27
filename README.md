@@ -23,14 +23,14 @@ Start here: `docs/index.md`
 
 Suggested reading order for onboarding:
 1) `docs/onboarding/00-overview.md`
-2) `docs/onboarding/01-local-setup.md` *(Day 2)*
+2) `docs/onboarding/01-local-setup.md`
 3) `docs/onboarding/02-first-task.md`
 4) `docs/onboarding/03-common-pitfalls.md`
 
 ## Scope
 
 Implemented (minimal):
-- HTTP endpoint to receive webhook requests (Day 2)
+- HTTP endpoint to receive webhook requests
 - Documentation-first repository structure
 
 Planned / documented:
