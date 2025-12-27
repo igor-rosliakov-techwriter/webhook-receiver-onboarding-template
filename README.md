@@ -46,7 +46,3 @@ Planned / documented:
   - security assumptions
   - lifecycle diagrams
   - runbooks and ADRs
-
-## License
-
-MIT (or choose another license).
