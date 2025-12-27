@@ -1,0 +1,5 @@
+{
+  "id": "evt_001",
+  "type": "payment_succeeded",
+  "data": {}
+}
