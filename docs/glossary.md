@@ -7,7 +7,7 @@ Definitions are written with onboarding in mind and assume no prior deep backend
 
 ## Webhook
 
-A **webhook** is an HTTP callback sent by one system (the provider)
+HTTP callback sent by one system (the provider)
 to notify another system (the receiver) that an event has occurred.
 
 Unlike APIs that are called by clients on demand,
@@ -24,7 +24,7 @@ The provider sends an HTTP request (usually POST) to a predefined URL.
 
 ## Webhook provider
 
-A **webhook provider** is the system that sends webhook events.
+System that sends webhook events.
 
 Examples include payment systems, version control platforms,
 or third-party services that notify external systems about changes.
@@ -38,7 +38,7 @@ Important characteristics:
 
 ## Webhook receiver
 
-A **webhook receiver** is the system that accepts incoming webhook requests.
+System that accepts incoming webhook requests.
 
 Its responsibilities typically include:
 - accepting HTTP requests
@@ -54,7 +54,7 @@ The receiver must be prepared to handle unreliable delivery conditions.
 
 ## Event
 
-An **event** represents something that happened in the provider’s system.
+Represents something that happened in the provider’s system.
 
 Events are usually immutable facts, for example:
 - “payment succeeded”
@@ -68,7 +68,7 @@ and includes an identifier, a type, and associated data.
 
 ## Event type
 
-An **event type** describes the kind of event that occurred.
+Describes the kind of event that occurred.
 
 Examples:
 - `payment_succeeded`
@@ -84,7 +84,7 @@ Event types are commonly used to:
 
 ## Event ID
 
-An **event ID** is a unique identifier assigned to an event by the provider.
+Unique identifier assigned to an event by the provider.
 
 It is critical for:
 - detecting duplicate deliveries
@@ -98,7 +98,7 @@ that multiple requests represent the same logical event.
 
 ## Delivery
 
-A **delivery** is a single attempt by the provider
+Single attempt by the provider
 to send an event to the receiver.
 
 Important distinction:
@@ -111,7 +111,7 @@ Each delivery is a technical attempt, not a new event.
 
 ## Retry
 
-A **retry** occurs when the provider attempts to deliver
+Occurs when the provider attempts to deliver
 the same event again after a failure or timeout.
 
 Retries may happen when:
@@ -125,8 +125,7 @@ Retries are expected behavior in webhook systems.
 
 ## Duplicate delivery
 
-A **duplicate delivery** is a repeated delivery
-of the same event (same event ID).
+Repeated delivery of the same event (same event ID).
 
 Duplicate deliveries are normal and should not be treated as errors.
 
@@ -137,8 +136,7 @@ may be delivered more than once.
 
 ## Idempotency
 
-**Idempotency** is the property of an operation
-that allows it to be performed multiple times
+Property of an operation that allows it to be performed multiple times
 without changing the final result after the first successful execution.
 
 In webhook processing, idempotency means:
@@ -151,8 +149,7 @@ Idempotency is essential to prevent duplicated side effects.
 
 ## Side effect
 
-A **side effect** is any change to system state
-that occurs as a result of processing an event.
+Any change to system state that occurs as a result of processing an event.
 
 Examples:
 - charging a payment
@@ -167,8 +164,7 @@ when duplicate deliveries occur.
 
 ## Idempotency store
 
-An **idempotency store** is a storage mechanism
-used to track which events have already been processed.
+Storage mechanism used to track which events have already been processed.
 
 Its purpose is to:
 - record processed event IDs
@@ -183,9 +179,8 @@ Production systems typically use external storage.
 
 ## HMAC (Hash-based Message Authentication Code)
 
-**HMAC** is a cryptographic mechanism
-used to verify that a message has not been altered
-and was sent by a trusted party.
+Cryptographic mechanism used to verify that a message has 
+not been altered and was sent by a trusted party.
 
 Webhook providers often compute an HMAC signature
 using a shared secret and the raw request body.
@@ -197,8 +192,7 @@ and compares it with the value sent by the provider.
 
 ## Signature
 
-A **signature** is a cryptographic value
-included in a webhook request to prove authenticity.
+Cryptographic value included in a webhook request to prove authenticity.
 
 It is usually sent in an HTTP header
 and derived from:
@@ -212,8 +206,7 @@ should not be trusted.
 
 ## Shared secret
 
-A **shared secret** is a value known only
-to the provider and the receiver.
+Value known only to the provider and the receiver.
 
 It is used as input to signature computation
 and must be kept confidential.
@@ -255,8 +248,7 @@ to control provider retry behavior.
 
 ## 2xx response
 
-A **2xx response** is an HTTP status code
-indicating successful handling of a request.
+HTTP status code indicating successful handling of a request.
 
 Most webhook providers interpret any 2xx response
 as confirmation that the event was accepted.
@@ -282,8 +274,7 @@ Webhook receivers should:
 
 ## Event handler
 
-An **event handler** is a function or component
-responsible for processing a specific event type.
+Function or component responsible for processing a specific event type.
 
 Handlers typically:
 - contain business logic
@@ -297,8 +288,7 @@ improves clarity and maintainability.
 
 ## Dispatching
 
-**Dispatching** is the process of routing an event
-to the appropriate handler based on its type.
+Process of routing an event to the appropriate handler based on its type.
 
 This usually involves:
 - inspecting the event type
@@ -311,8 +301,7 @@ Dispatching logic should be simple and explicit.
 
 ## Runbook
 
-A **runbook** is an operational document
-that describes how to diagnose and resolve issues.
+Operational document that describes how to diagnose and resolve issues.
 
 Runbooks are used by:
 - on-call engineers
@@ -325,8 +314,7 @@ A good runbook focuses on symptoms, causes, and actions.
 
 ## ADR (Architecture Decision Record)
 
-An **ADR** is a short document
-that records an important architectural decision.
+Short document that records an important architectural decision.
 
 An ADR typically includes:
 - context (the problem)
@@ -341,8 +329,7 @@ understand why a system is designed the way it is.
 
 ## Observability
 
-**Observability** refers to the ability
-to understand system behavior through signals such as:
+Refers to the ability to understand system behavior through signals such as:
 - logs
 - metrics
 - traces
@@ -354,7 +341,7 @@ for diagnosing delivery issues and retries.
 
 ## Logging
 
-**Logging** is the practice of recording
+Practice of recording
 structured information about system behavior.
 
 In webhook systems, logs often include:
