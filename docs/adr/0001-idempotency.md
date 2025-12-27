@@ -5,12 +5,26 @@ Draft
 
 ## Context
 
-Webhook providers may retry event deliveries in cases of network failures,
-timeouts, or non-2xx HTTP responses.
-As a result, the same event can be delivered multiple times.
+Webhook providers deliver events over HTTP and do not have reliable knowledge
+of whether an event was successfully processed by the receiving system.
 
-Without special handling, this may lead to duplicate processing
-and unintended side effects.
+If the receiver:
+- does not respond,
+- responds with a non-2xx status code,
+- or responds too slowly,
+
+the provider may retry the delivery of the same event.
+
+As a result, the same logical event can be delivered multiple times.
+
+In systems that perform side effects (such as creating orders or charging payments),
+processing the same event more than once may lead to incorrect behavior.
+
+For example, if a `payment_succeeded` event is delivered twice and the system is not idempotent:
+- the payment may be recorded multiple times,
+- the same order may be created more than once.
+
+To ensure correct behavior, duplicate deliveries must be expected and handled explicitly.
 
 ## Decision
 
