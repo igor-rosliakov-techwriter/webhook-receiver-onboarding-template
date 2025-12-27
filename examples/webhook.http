@@ -1,0 +1,9 @@
+### Sample webhook request (will work after local setup is implemented)
+POST http://localhost:8000/webhooks
+Content-Type: application/json
+
+{
+  "id": "evt_001",
+  "type": "payment_succeeded",
+  "data": {}
+}
