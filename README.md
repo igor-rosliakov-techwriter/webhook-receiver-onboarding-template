@@ -10,11 +10,22 @@ architecture docs, runbooks, and ADRs can be structured in a real-world backend 
 
 ## What’s inside
 
-- **Onboarding docs**: overview, local setup, first task, common pitfalls
-- **Architecture docs**: request flow, security notes, event lifecycle
+- **Onboarding docs**:
+  - overview
+  - local setup
+  - first task
+  - common pitfalls
+- **Architecture docs**:
+  - request flow
+  - security notes
+  - event lifecycle
 - **Runbook**: troubleshooting scenarios and operational guidance
-- **ADR**: key design decision(s), e.g. idempotency
-- **Examples**: sample payloads, example requests, example responses
+- **ADR**:
+  - key design decision(s), e.g. idempotency
+- **Examples**:
+  - sample payloads
+  - example requests
+  - example responses
 - **Diagram**: webhook processing flow
 
 ## Documentation map
