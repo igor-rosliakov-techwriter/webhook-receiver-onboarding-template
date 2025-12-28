@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -18,22 +20,75 @@ logger = logging.getLogger("webhook_receiver")
 
 app = FastAPI(title="Webhook Receiver (Onboarding Template)")
 
+SIGNATURE_HEADER = "X-Signature"
+SIGNATURE_PREFIX = "sha256="
+
+
+def compute_signature(secret: str, raw_body: bytes) -> str:
+    """
+    Compute HMAC-SHA256 over raw request body bytes and return value formatted
+    as: sha256=<hex_digest>
+    """
+    digest = hmac.new(secret.encode("utf-8"), raw_body, hashlib.sha256).hexdigest()
+    return f"{SIGNATURE_PREFIX}{digest}"
+
+
+def verify_signature(secret: str, raw_body: bytes, received_signature: str | None) -> bool:
+    """
+    Verify request signature using constant-time comparison.
+    """
+    if not received_signature:
+        return False
+    expected = compute_signature(secret, raw_body)
+    return hmac.compare_digest(expected, received_signature)
+
 
 @app.post("/webhooks")
 async def receive_webhook(request: Request):
-    """
-    Day 2 minimal endpoint:
-    - read raw body
-    - parse JSON (safely)
-    - log request_id, event_type, status
-    - return 200
-    """
     request_id = str(uuid.uuid4())
 
+    # read raw body bytes first (required for signature verification)
     raw_body = await request.body()
+
+    # signature verification (day 3)
+    secret = os.getenv("WEBHOOK_SECRET")
+    if not secret:
+        # misconfiguration: keep response simple but explicit
+        logger.error(
+            "webhook_misconfigured",
+            extra={"request_id": request_id, "status": "missing_webhook_secret"},
+        )
+        return JSONResponse(
+            status_code=500,
+            content={
+                "request_id": request_id,
+                "error": "server_misconfigured",
+                "message": "WEBHOOK_SECRET is not configured.",
+            },
+        )
+
+    received_signature = request.headers.get(SIGNATURE_HEADER)
+    if not verify_signature(secret, raw_body, received_signature):
+        logger.info(
+            "webhook_rejected",
+            extra={
+                "request_id": request_id,
+                "status": "invalid_signature",
+            },
+        )
+        return JSONResponse(
+            status_code=401,
+            content={
+                "request_id": request_id,
+                "error": "invalid_signature",
+                "message": "Request signature is missing or invalid.",
+            },
+        )
+
+    # decode for JSON parsing (keep it simple for this template)
     body_text = raw_body.decode("utf-8", errors="replace")
 
-    # parse JSON (keep it simple for day 2)
+    # parse JSON
     try:
         payload = json.loads(body_text) if body_text else {}
     except json.JSONDecodeError:
