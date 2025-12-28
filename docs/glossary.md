@@ -341,8 +341,7 @@ for diagnosing delivery issues and retries.
 
 ## Logging
 
-Practice of recording
-structured information about system behavior.
+Practice of recording structured information about system behavior.
 
 In webhook systems, logs often include:
 - request identifiers
@@ -351,3 +350,25 @@ In webhook systems, logs often include:
 - processing outcomes
 
 Good logging enables effective debugging and support.
+
+---
+
+## Replay attack
+
+A replay attack occurs when an attacker captures a previously valid request
+and resends it at a later time to trigger the same action again.
+
+Signature verification alone does not prevent replay attacks, because a valid
+signature remains valid if the request body is unchanged.
+
+Mitigation strategies typically include timestamps, nonces, or idempotency checks.
+Replay protection is documented as a future improvement for this template.
+
+
+## Timestamp
+A timestamp is a value included in a request that indicates when it was created.
+When combined with signature verification, timestamps can be used to prevent
+replay attacks by rejecting requests that are older than an allowed time window.
+
+Timestamp-based validation is not implemented in this template but is referenced
+as a possible future enhancement.
