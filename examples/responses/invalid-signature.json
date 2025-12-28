@@ -1,3 +1,5 @@
 {
-  "error": "invalid_signature"
+  "request_id": "b16d3c0e-078a-4a78-b8d2-16a6de174568",
+  "error": "invalid_signature",
+  "message": "Request signature is missing or invalid."
 }
