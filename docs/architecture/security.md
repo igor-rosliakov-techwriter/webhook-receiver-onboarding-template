@@ -47,6 +47,18 @@ For each request, the sender computes an HMAC-SHA256 signature over the
 **raw request body bytes** and includes it in an HTTP header.
 The service recomputes the signature and compares it with the received value.
 
+### Responsibility boundary
+
+Signature generation is the responsibility of the webhook sender
+(webhook provider), not this service.
+
+The webhook receiver **never generates signatures** in production.
+Its only responsibility is to verify signatures on incoming requests.
+
+For local development and onboarding purposes, this repository includes
+helper tooling to simulate a webhook provider.
+
+
 ---
 
 ## Signature format
@@ -75,6 +87,11 @@ On the service side, this corresponds to:
 
 - using `request.body()` (raw bytes)
 - **not** re-serializing parsed JSON
+
+For local testing, this is why the Makefile and helper script always
+sign the payload file using its raw byte representation and send it
+using `--data-binary`.
+
 
 ### Why raw body is used
 
@@ -127,22 +144,35 @@ For local development, it can be defined in a `.env` file.
 
 ## Local development example
 
-To compute a valid signature for a local request:
+For local development and onboarding, this repository includes helper
+tooling to simulate a webhook provider.
+
+### Recommended approach
+
+The recommended way to send a signed webhook request locally is to use
+the provided Makefile:
 
 ```bash
-SECRET="dev_secret_123"
-BODY="$(cat examples/payloads/payment_succeeded.json)"
-SIG=$(printf '%s' "$BODY" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
-echo "sha256=$SIG"
+make send
 ```
 
-Send the request with the computed signature:
+This command:
+- Generates a valid HMAC-SHA256 signature using the shared secret from `.env`.
+- Signs the exact raw request body bytes.
+- Sends a sample webhook payload to the local service.
 
-```bash
-curl -X POST "http://localhost:8000/webhooks" \
-  -H "Content-Type: application/json" \
-  -H "X-Signature: sha256=$SIG" \
-  --data-binary @examples/payloads/payment_succeeded.json
-```
+This approach avoids common pitfalls related to shell quoting and
+payload formatting and ensures consistent signature verification.
+
+### Helper script
+
+Internally, `make send` uses a small helper script:
+
+[scripts/sign_payload.py](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/scripts/sign_payload.py)
 
 
+This script reads the payload file as raw bytes and computes an HMAC
+signature using the shared secret from the environment.
+
+It exists solely to support local testing and onboarding and is not
+part of the production request flow.
