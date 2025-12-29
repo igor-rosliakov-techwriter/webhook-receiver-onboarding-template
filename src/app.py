@@ -47,13 +47,10 @@ def verify_signature(secret: str, raw_body: bytes, received_signature: str | Non
 async def receive_webhook(request: Request):
     request_id = str(uuid.uuid4())
 
-    # read raw body bytes first (required for signature verification)
     raw_body = await request.body()
 
-    # signature verification (day 3)
     secret = os.getenv("WEBHOOK_SECRET")
     if not secret:
-        # misconfiguration: keep response simple but explicit
         logger.error(
             "webhook_misconfigured",
             extra={"request_id": request_id, "status": "missing_webhook_secret"},
@@ -85,10 +82,8 @@ async def receive_webhook(request: Request):
             },
         )
 
-    # decode for JSON parsing (keep it simple for this template)
     body_text = raw_body.decode("utf-8", errors="replace")
 
-    # parse JSON
     try:
         payload = json.loads(body_text) if body_text else {}
     except json.JSONDecodeError:
@@ -108,12 +103,52 @@ async def receive_webhook(request: Request):
             },
         )
 
+    # day 4: idempotency key
+    event_id = payload.get("id") or payload.get("event_id")
+    if not event_id:
+        logger.info(
+            "webhook_received",
+            extra={
+                "request_id": request_id,
+                "status": "missing_event_id",
+            },
+        )
+        return JSONResponse(
+            status_code=400,
+            content={
+                "request_id": request_id,
+                "error": "missing_event_id",
+                "message": "Payload must include an event id (id/event_id).",
+            },
+        )
+
     event_type = payload.get("type") or payload.get("event_type") or "unknown"
+
+    # day 4: deduplicate deliveries
+    if event_id in processed_event_ids:
+        logger.info(
+            "webhook_duplicate_ignored",
+            extra={
+                "request_id": request_id,
+                "event_id": event_id,
+                "event_type": event_type,
+                "status": "duplicate",
+            },
+        )
+        return {
+            "request_id": request_id,
+            "status": "duplicate",
+            "event_id": event_id,
+            "event_type": event_type,
+        }
+
+    processed_event_ids.add(event_id)
 
     logger.info(
         "webhook_received",
         extra={
             "request_id": request_id,
+            "event_id": event_id,
             "event_type": event_type,
             "status": "ok",
         },
@@ -122,5 +157,6 @@ async def receive_webhook(request: Request):
     return {
         "request_id": request_id,
         "status": "ok",
+        "event_id": event_id,
         "event_type": event_type,
     }
