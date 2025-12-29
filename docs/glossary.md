@@ -125,16 +125,25 @@ Retries are expected behavior in webhook systems.
 
 ## Duplicate delivery
 
-Repeated delivery of the same event (same event ID).
+Repeated delivery of the same event (same event ID). 
 
 Duplicate deliveries are normal and should not be treated as errors.
-
-Webhook receivers must assume that any event
-may be delivered more than once.
+Webhook receivers must assume that any event may be delivered more than once.
 
 ---
 
+## Deduplication
+
+The process of detecting and ignoring duplicate events or requests.
+
+For webhook processing, deduplication is typically based on a stable
+event identifier and is applied before executing any business logic.
+In this service, deduplication prevents repeated processing of the same
+event when a webhook provider retries delivery.
+
 ## Idempotency
+
+---
 
 Property of an operation that allows it to be performed multiple times
 without changing the final result after the first successful execution.
