@@ -95,6 +95,6 @@ the same event indefinitely.
 
 ## Additional notes
 
-Avoid logging secrets or signature values.
-Keep webhook handlers lightweight and return responses quickly.
-Perform idempotency checks before any business logic.
+- Avoid logging secrets or signature values.
+- Keep webhook handlers lightweight and return responses quickly.
+- Perform idempotency checks before any business logic.
