@@ -82,7 +82,7 @@ make run
 ```
 
 The service will start listening on http://localhost:8000.
-Note: This command runs a long-lived server process and will keep the terminal busy.
+> Note: This command runs a long-lived server process and will keep the terminal busy.
 
 ### 3. Send a signed webhook request (Terminal 2)
 
