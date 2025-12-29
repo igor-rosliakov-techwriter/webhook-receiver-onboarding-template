@@ -23,6 +23,8 @@ app = FastAPI(title="Webhook Receiver (Onboarding Template)")
 SIGNATURE_HEADER = "X-Signature"
 SIGNATURE_PREFIX = "sha256="
 
+processed_event_ids: set[str] = set()
+
 
 def compute_signature(secret: str, raw_body: bytes) -> str:
     """
@@ -103,7 +105,7 @@ async def receive_webhook(request: Request):
             },
         )
 
-    # day 4: idempotency key
+    # idempotency key
     event_id = payload.get("id") or payload.get("event_id")
     if not event_id:
         logger.info(
@@ -124,7 +126,7 @@ async def receive_webhook(request: Request):
 
     event_type = payload.get("type") or payload.get("event_type") or "unknown"
 
-    # day 4: deduplicate deliveries
+    # deduplicate deliveries
     if event_id in processed_event_ids:
         logger.info(
             "webhook_duplicate_ignored",
