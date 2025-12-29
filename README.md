@@ -60,9 +60,45 @@ Planned / documented:
  
 ## Quick start
 
+This repository includes a small Makefile to simplify local setup and testing.
+
+### 1. Environment setup
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+make setup
 cp .env.example .env
-uvicorn src.app:app --reload --port 8000
+```
+
+Edit .env and set your own value for WEBHOOK_SECRET.
+
+### 2. Run the service (Terminal 1)
+
+Start the webhook receiver locally:
+
+```bash
+make run
+```
+
+The service will start listening on http://localhost:8000.
+Note: This command runs a long-lived server process and will keep the terminal busy.
+
+### 3. Send a signed webhook request (Terminal 2)
+
+Open a second terminal window in the same repository and run:
+
+```bash
+make send
+```
+
+This command:
+- generates a valid request signature using the shared secret from .env
+- sends a sample webhook payload to the local service
+
+You should receive a `200 OK` response.
+Sending the same request again will return `status: duplicate`.
+
+For a detailed explanation of the local setup and testing workflow, see:
+- [docs/onboarding/01-local-setup.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/01-local-setup.md)
+- [docs/index.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/index.md)
