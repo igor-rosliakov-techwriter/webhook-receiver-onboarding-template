@@ -1,15 +1,18 @@
 from __future__ import annotations
 
-from typing import Any
 import logging
 
-from .models import WebhookEvent
+def handle_payment_succeeded(payload: dict, logger: logging.Logger, request_id: str) -> None:
+    event_id = payload.get("id") or payload.get("event_id")
+    logger.info(
+        "handler_payment_succeeded",
+        extra={"request_id": request_id, "event_id": event_id},
+    )
 
-
-def handle_payment_succeeded(event: WebhookEvent, logger: logging.Logger) -> None:
-    # minimal "business logic" – just show where real work would happen
-    logger.info("handler:payment_succeeded event_id=%s", event.id)
-
-
-def handle_payment_failed(event: WebhookEvent, logger: logging.Logger) -> None:
-    logger.info("handler:payment_failed event_id=%s", event.id)
+def handle_payment_failed(payload: dict, logger: logging.Logger, request_id: str) -> None:
+    event_id = payload.get("id") or payload.get("event_id")
+    reason = (payload.get("data") or {}).get("reason")
+    logger.info(
+        "handler_payment_failed",
+        extra={"request_id": request_id, "event_id": event_id, "reason": reason},
+    )
