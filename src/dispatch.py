@@ -15,6 +15,7 @@ Handler = Callable[[dict, logging.Logger, str], None]
 HANDLERS: dict[str, Handler] = {
     "payment_succeeded": handle_payment_succeeded,
     "payment_failed": handle_payment_failed,
+    "subscription_created": handle_subscription_created,
 }
 
 def dispatch_event(event_type: str, payload: dict, logger: logging.Logger, request_id: str) -> str:
