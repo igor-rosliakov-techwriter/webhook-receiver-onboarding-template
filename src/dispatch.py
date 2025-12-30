@@ -3,27 +3,30 @@ from __future__ import annotations
 from collections.abc import Callable
 import logging
 
-from .models import WebhookEvent
 from .handlers import handle_payment_failed, handle_payment_succeeded
 
-Handler = Callable[[WebhookEvent, logging.Logger], None]
+Handler = Callable[[dict, logging.Logger, str], None]
 
 HANDLERS: dict[str, Handler] = {
     "payment_succeeded": handle_payment_succeeded,
     "payment_failed": handle_payment_failed,
 }
 
+def dispatch_event(event_type: str, payload: dict, logger: logging.Logger, request_id: str) -> str:
+    """
+    Executes a handler for known event types.
 
-def dispatch(event: WebhookEvent, logger: logging.Logger) -> str:
+    Returns:
+      - "ok"      if handler executed
+      - "ignored" if event type is unknown
     """
-    Returns a result string for the HTTP response status field:
-      - "ok"      -> handler executed
-      - "ignored" -> unknown event type
-    """
-    handler = HANDLERS.get(event.type)
+    handler = HANDLERS.get(event_type)
     if handler is None:
-        logger.warning("unknown_event_type type=%s event_id=%s", event.type, event.id)
+        logger.warning(
+            "webhook_ignored_unknown_event_type",
+            extra={"request_id": request_id, "event_type": event_type},
+        )
         return "ignored"
 
-    handler(event, logger)
+    handler(payload, logger, request_id)
     return "ok"
