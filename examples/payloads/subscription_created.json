@@ -1,0 +1,10 @@
+{
+  "id": "evt_003",
+  "type": "subscription_created",
+  "data": {
+    "subscription_id": "sub_123",
+    "user_id": "user_456",
+    "plan": "pro_monthly",
+    "started_at": "2025-12-31T00:00:00Z"
+  }
+}
