@@ -3,7 +3,12 @@ from __future__ import annotations
 from collections.abc import Callable
 import logging
 
-from .handlers import handle_payment_failed, handle_payment_succeeded
+from .handlers import (
+    andle_payment_failed,
+    handle_payment_succeeded,
+    handle_subscription_created,
+)
+
 
 Handler = Callable[[dict, logging.Logger, str], None]
 
