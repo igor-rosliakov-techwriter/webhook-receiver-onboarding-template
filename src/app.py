@@ -8,6 +8,7 @@ import uuid
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from .dispatch import dispatch_event
 
 load_dotenv()
 
@@ -146,19 +147,24 @@ async def receive_webhook(request: Request):
 
     processed_event_ids.add(event_id)
 
+    processed_event_ids.add(event_id)
+
+    result = dispatch_event(event_type=event_type, payload=payload, logger=logger, request_id=request_id)
+    
     logger.info(
         "webhook_received",
         extra={
             "request_id": request_id,
             "event_id": event_id,
             "event_type": event_type,
-            "status": "ok",
+            "status": result,  # <-- было "ok"
         },
     )
-
+    
     return {
         "request_id": request_id,
-        "status": "ok",
+        "status": result,  # <-- было "ok"
         "event_id": event_id,
         "event_type": event_type,
     }
+
