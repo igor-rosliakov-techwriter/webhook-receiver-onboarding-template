@@ -157,13 +157,13 @@ async def receive_webhook(request: Request):
             "request_id": request_id,
             "event_id": event_id,
             "event_type": event_type,
-            "status": result,  # <-- было "ok"
+            "status": result,
         },
     )
     
     return {
         "request_id": request_id,
-        "status": result,  # <-- было "ok"
+        "status": result,
         "event_id": event_id,
         "event_type": event_type,
     }
