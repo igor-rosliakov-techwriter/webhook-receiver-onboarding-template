@@ -1,9 +1,8 @@
-"""
-Data models for webhook payloads.
+from pydantic import BaseModel
+from typing import Any
 
-This module will contain:
-- Pydantic models for incoming webhook events
-- shared data structures used across the service
 
-Currently not implemented.
-"""
+class WebhookEvent(BaseModel):
+    id: str
+    type: str
+    data: dict[str, Any] = {}
