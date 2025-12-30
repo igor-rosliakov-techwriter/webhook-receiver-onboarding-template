@@ -4,7 +4,7 @@ from collections.abc import Callable
 import logging
 
 from .handlers import (
-    andle_payment_failed,
+    handle_payment_failed,
     handle_payment_succeeded,
     handle_subscription_created,
 )
