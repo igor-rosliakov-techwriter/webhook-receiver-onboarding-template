@@ -1,43 +1,72 @@
-### Webhook request WITHOUT signature (should return 401)
-POST http://localhost:8000/webhooks
-Content-Type: application/json
+# examples/webhook.http
+# This file is a curl-based cheat sheet for sending webhook requests.
+# It is intentionally written as shell commands to avoid raw-body/signature mismatch issues.
 
-{
-  "id": "evt_001",
-  "type": "payment_succeeded",
-  "created_at": "2025-12-27T00:00:00Z",
-  "data": {
-    "payment_id": "pay_123",
-    "amount": 4200,
-    "currency": "JPY",
-    "customer_id": "cus_777"
-  }
-}
+# Prerequisites:
+#   - copy .env.example -> .env
+#   - set WEBHOOK_SECRET in .env
+#   - run the service: make run
 
-###
+BASE_URL="http://localhost:8000"
+HEADER_SIG="X-Signature"
 
-### Webhook request WITH valid signature (should return 200)
-# Before sending this request, compute the signature:
-#
-# SECRET="dev_secret_123"
-# BODY="$(cat examples/payloads/payment_succeeded.json)"
-# SIG=$(printf '%s' "$BODY" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
-#
-# Then set:
-# X-Signature: sha256=<SIG>
+# ------------------------------------------------------------------------------
+# 1) WITHOUT signature -> expected: 401 invalid_signature
+# ------------------------------------------------------------------------------
+curl -i -X POST "$BASE_URL/webhooks" \
+  -H "Content-Type: application/json" \
+  --data-binary @examples/payloads/payment_succeeded.json
 
-POST http://localhost:8000/webhooks
-Content-Type: application/json
-X-Signature: sha256=REPLACE_WITH_COMPUTED_SIGNATURE
+# ------------------------------------------------------------------------------
+# 2) WITH valid signature -> expected: 200 ok
+# ------------------------------------------------------------------------------
+SIG=$(python scripts/sign_payload.py --file examples/payloads/payment_succeeded.json)
+echo "Signature: $SIG"
 
-{
-  "id": "evt_001",
-  "type": "payment_succeeded",
-  "created_at": "2025-12-27T00:00:00Z",
-  "data": {
-    "payment_id": "pay_123",
-    "amount": 4200,
-    "currency": "JPY",
-    "customer_id": "cus_777"
-  }
-}
+curl -i -X POST "$BASE_URL/webhooks" \
+  -H "Content-Type: application/json" \
+  -H "$HEADER_SIG: $SIG" \
+  --data-binary @examples/payloads/payment_succeeded.json
+
+# ------------------------------------------------------------------------------
+# 3) DUPLICATE delivery -> expected: 200 duplicate
+#    (send the same payload with the same event id again)
+# ------------------------------------------------------------------------------
+SIG=$(python scripts/sign_payload.py --file examples/payloads/payment_succeeded.json)
+curl -i -X POST "$BASE_URL/webhooks" \
+  -H "Content-Type: application/json" \
+  -H "$HEADER_SIG: $SIG" \
+  --data-binary @examples/payloads/payment_succeeded.json
+
+# ------------------------------------------------------------------------------
+# 4) Another known event type -> expected: 200 ok (subscription_created)
+# ------------------------------------------------------------------------------
+SIG=$(python scripts/sign_payload.py --file examples/payloads/subscription_created.json)
+echo "Signature: $SIG"
+
+curl -i -X POST "$BASE_URL/webhooks" \
+  -H "Content-Type: application/json" \
+  -H "$HEADER_SIG: $SIG" \
+  --data-binary @examples/payloads/subscription_created.json
+
+# ------------------------------------------------------------------------------
+# 5) Unknown event type -> expected: 200 ignored
+# ------------------------------------------------------------------------------
+SIG=$(python scripts/sign_payload.py --file examples/payloads/unknown_event.json)
+echo "Signature: $SIG"
+
+curl -i -X POST "$BASE_URL/webhooks" \
+  -H "Content-Type: application/json" \
+  -H "$HEADER_SIG: $SIG" \
+  --data-binary @examples/payloads/unknown_event.json
+
+# ------------------------------------------------------------------------------
+# 6) Invalid JSON -> expected: 400 invalid_json
+# ------------------------------------------------------------------------------
+BAD_SIG=$(python -c "import hmac,hashlib,os;from dotenv import load_dotenv;load_dotenv();s=os.getenv('WEBHOOK_SECRET','').encode();b=b'not json';print('sha256='+hmac.new(s,b,hashlib.sha256).hexdigest())")
+echo "Signature: $BAD_SIG"
+
+curl -i -X POST "$BASE_URL/webhooks" \
+  -H "Content-Type: application/json" \
+  -H "$HEADER_SIG: $BAD_SIG" \
+  --data-binary "not json"
