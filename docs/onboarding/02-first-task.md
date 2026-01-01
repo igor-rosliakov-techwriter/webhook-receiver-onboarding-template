@@ -124,9 +124,9 @@ make send PAYLOAD=examples/payloads/subscription_created.json
   ```
 
 This command:
-- Computes the correct HMAC signature.
-- Sends the raw request body.
-- Calls the /webhooks endpoint.
+- computes the correct HMAC signature.
+- sends the raw request body.
+- calls the /webhooks endpoint.
 
 ## Step 5: Verify the result
 
@@ -196,9 +196,9 @@ This prevents unnecessary retries from external providers.
 
 You have:
 
-- Added a new event handler.
-- Registered it in the dispatcher.
-- Tested it locally with a signed webhook.
-- Verified idempotency and unknown-event behavior.
+- added a new event handler.
+- registered it in the dispatcher.
+- tested it locally with a signed webhook.
+- verified idempotency and unknown-event behavior.
   
 This is the standard workflow for extending the webhook receiver with new event types.
