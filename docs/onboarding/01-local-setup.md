@@ -78,14 +78,9 @@ Sending the same request again will return:
 
 ## Troubleshooting
 
-### Address already in use (Errno 48)
+For troubleshooting scenarios (invalid signature, invalid JSON, 
+duplicate deliveries, retry storms), see:
+- [troubleshooting.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/runbook/troubleshooting.md)
+- [03-common-pitfalls.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/03-common-pitfalls.md)
 
-If you see an error like:
-
-```
-Address already in use
-```
-
-it means the service is already running in another terminal.
-Stop the existing process or use a different port.
 
