@@ -1,6 +1,5 @@
-.PHONY: help setup run sig send send-payload
+.PHONY: help setup run sig send
 
-# defaults (can be overridden: make send PAYLOAD=...)
 PORT ?= 8000
 PAYLOAD ?= examples/payloads/payment_succeeded.json
 
@@ -24,7 +23,6 @@ sig:
 send:
 	$(eval SIG := $(shell python scripts/sign_payload.py --file $(PAYLOAD)))
 	@echo "Sending payload: $(PAYLOAD)"
-	@echo "Signature: $(SIG)"
 	curl -i -X POST "http://localhost:$(PORT)/webhooks" \
 	  -H "Content-Type: application/json" \
 	  -H "X-Signature: $(SIG)" \
