@@ -7,8 +7,7 @@ and testing webhook receivers, along with recommended solutions.
 
 ## 401 Unauthorized: invalid signature
 
-A `401 Unauthorized` response indicates that the webhook signature
-verification has failed.
+A `401 Unauthorized` response indicates that signature verification failed.
 
 ### Common causes
 
@@ -16,85 +15,92 @@ verification has failed.
   The `X-Signature` header is not included in the request.
 
 - **Signature computed with a different secret**  
-  The secret used to generate the signature does not match
-  `WEBHOOK_SECRET` configured in the receiver.
+  The signing secret does not match `WEBHOOK_SECRET` configured
+  in the receiver.
 
 - **Payload bytes do not match**  
-  The signature is computed over a different byte representation
-  than the one sent to the server.
+  The signature was computed over different bytes than those sent.
 
   This often happens when:
   - signing inline JSON instead of a file
   - modifying whitespace or formatting
   - using `curl -d` instead of `--data-binary`
 
-### Recommended solution
+### How to fix quickly
 
-For local development, use the provided Makefile:
+For local development, always use:
 
 ```bash
-make send
+make send PAYLOAD=examples/payloads/payment_succeeded.json
 ```
 
-This ensures that:
-- The signature is generated using the correct secret.
-- The exact raw payload bytes are signed.
-- The same bytes are sent to the server.
+This ensures:
+- correct secret usage;
+- signing of raw payload bytes;
+- identical bytes sent to the server.
 
 ## Address already in use (Errno 48)
 
-You may encounter an error like:
+### Symptom
 
-```
+Server fails to start with:
+```css
 Address already in use
 ```
 
 ### Cause
-The webhook receiver is already running and listening on the same port.
-This commonly happens when:
 
-- The server is started twice.
-- Make run is executed while an existing instance is still running.
+Another instance of the webhook receiver is already running.
 
-### Solution
+This usually happens when:
+- the server is started twice;
+- make run is executed in multple terminals;
+
+### How to fix
 
 - Keep the server running in one terminal:
-```
+```bash
 make run
 ```
 
 - Send requests from a separate terminal:
-```
+```bash
 make send
 ```
 
-- Stop the existing process before restarting the server.
+- Stop the existing process before restarting.
 
 ## Duplicate deliveries
 
 Webhook providers may deliver the same event multiple times due to:
-- network timeouts
-- slow responses
-- non-2xx HTTP responses
-This behavior is expected and must be handled explicitly.
+- retries
+- timeouts
+- network instability
 
 ### Expected behavior
 
 When the same event_id is received more than once:
-- the service detects the duplicate
-- the event is not processed again
-- a `200 OK` response is returned with:
+- the event is not processed again;
+- the receiver responds with `200 OK`;
+- the response includes:
 ```json
-{
-  "status": "duplicate"
-}
+{ "status": "duplicate" }
 ```
 
-Returning a successful response prevents the provider from retrying
-the same event indefinitely.
+This is intentional and prevents infinite retries.
 
-## Additional notes
+## Ignored event types
 
-- Avoid logging secrets or signature values.
-- Keep webhook handlers lightweight and return responses quickly.
-- Perform idempotency checks before any business logic.
+If an unknown event_type is received:
+- the event is acknowledged with `200 OK`;
+- no handler is executed;
+- the event is logged as ignored.
+
+This prevents unnecessary retries for unsupported event types.
+
+## General recommendations
+
+- Never log secrets or raw signature values.
+- Keep webhook handlers lightweight.
+- Perform idempotency checks before business logic.
+- Always acknowledge valid deliveries quickly.
