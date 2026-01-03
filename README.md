@@ -41,14 +41,10 @@ Suggested reading order for onboarding:
 ## Scope
 
 Implemented (minimal):
-- HTTP endpoint to receive webhook requests
-- Documentation-first repository structure
-
-Planned / documented:
-- signature verification (HMAC)
-- idempotency and duplicate delivery handling
-- event dispatching and error patterns
-- operational troubleshooting
+- Signature verification (HMAC-SHA256).
+- Idempotency (duplicate → 200).
+- Event dispatching + handlers.
+- Pperational docs (runbook + pitfalls) operational troubleshooting.
 
 ## How to use this repo
 
@@ -89,7 +85,7 @@ The service will start listening on http://localhost:8000.
 Open a second terminal window in the same repository and run:
 
 ```bash
-make send
+make send PAYLOAD=examples/payloads/payment_succeeded.json
 ```
 
 This command:
@@ -97,7 +93,14 @@ This command:
 - sends a sample webhook payload to the local service
 
 You should receive a `200 OK` response.
-Sending the same request again will return `status: duplicate`.
+
+To test other scenarios:
+- duplicate: send the same payload twice (same `event_id`)
+- ignored: `make send PAYLOAD=examples/payloads/unknown_event.json`
+
+If something goes wrong, see:
+- [docs/runbook/troubleshooting.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/runbook/troubleshooting.md)
+- [docs/onboarding/03-common-pitfalls.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/03-common-pitfalls.md)
 
 For a detailed explanation of the local setup and testing workflow, see:
 - [docs/onboarding/01-local-setup.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/onboarding/01-local-setup.md)
