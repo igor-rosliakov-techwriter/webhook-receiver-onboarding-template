@@ -373,6 +373,7 @@ signature remains valid if the request body is unchanged.
 Mitigation strategies typically include timestamps, nonces, or idempotency checks.
 Replay protection is documented as a future improvement for this template.
 
+---
 
 ## Timestamp
 A timestamp is a value included in a request that indicates when it was created.
@@ -381,3 +382,18 @@ replay attacks by rejecting requests that are older than an allowed time window.
 
 Timestamp-based validation is not implemented in this template but is referenced
 as a possible future enhancement.
+
+---
+
+## Retry storm
+
+Situation where a webhook provider sends the same event repeatedly
+in a short period of time.
+
+Retry storms typically occur when:
+- the receiver responds too slowly;
+- non-2xx responses are returned;
+- network issues prevent acknowledgement.
+
+Proper idempotency and fast 2xx responses help mitigate retry storms.
+
