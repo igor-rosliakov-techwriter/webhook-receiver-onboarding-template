@@ -11,11 +11,17 @@ This documentation set is organized as an onboarding template for a minimal webh
 
 ## Architecture
 
+These documents explain how the service works internally
+and are useful once you understand the basic onboarding flow.
+
 - System overview and webhook flow: [`architecture/overview.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/architecture/overview.md).
 - Security model (signatures, secrets): [`architecture/security.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/architecture/security.md).
 - Event lifecycle (receive → validate → dedupe → dispatch): [`architecture/event-lifecycle.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/architecture/event-lifecycle.md).
 
 ## Operations
+
+Operational documents are intended for troubleshooting
+once the service is running or integrated.
 
 - Troubleshooting runbook: [`runbook/troubleshooting.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/runbook/troubleshooting.md).
 
