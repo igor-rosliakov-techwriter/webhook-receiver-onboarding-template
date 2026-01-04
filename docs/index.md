@@ -11,18 +11,18 @@ This documentation set is organized as an onboarding template for a minimal webh
 
 ## Architecture
 
-- System overview and webhook flow: `architecture/overview.md`
-- Security model (signatures, secrets): `architecture/security.md`
-- Event lifecycle (receive → validate → dedupe → dispatch): `architecture/event-lifecycle.md`
+- System overview and webhook flow: [`architecture/overview.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/architecture/overview.md).
+- Security model (signatures, secrets): [`architecture/security.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/architecture/security.md).
+- Event lifecycle (receive → validate → dedupe → dispatch): [`architecture/event-lifecycle.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/architecture/event-lifecycle.md).
 
 ## Operations
 
-- Troubleshooting runbook: `runbook/troubleshooting.md`
+- Troubleshooting runbook: [`runbook/troubleshooting.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/runbook/troubleshooting.md).
 
 ## Decisions
 
-- ADR-0001 — Idempotency: `adr/0001-idempotency.md`
+- ADR-0001 — Idempotency: [`adr/0001-idempotency.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/adr/0001-idempotency.md).
 
 ## Reference
 
-- Glossary: `glossary.md`
+- Glossary: [`glossary.md`](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/glossary.md).
