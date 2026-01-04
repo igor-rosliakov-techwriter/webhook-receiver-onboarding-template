@@ -1,7 +1,6 @@
 # Webhook Receiver — Onboarding Documentation Template
 
-This repository is a **portfolio project** focused on backend onboarding documentation.
-
+This repository is a **template** focused on backend onboarding documentation. 
 It uses a minimal webhook receiver as an example service to demonstrate how onboarding guides,
 architecture docs, runbooks, and ADRs can be structured in a real-world backend team.
 
@@ -44,7 +43,7 @@ Implemented (minimal):
 - Signature verification (HMAC-SHA256).
 - Idempotency (duplicate → 200).
 - Event dispatching + handlers.
-- Pperational docs (runbook + pitfalls) operational troubleshooting.
+- Operational docs (runbook + pitfalls) operational troubleshooting.
 
 ## How to use this repo
 
@@ -69,7 +68,7 @@ cp .env.example .env
 
 Edit .env and set your own value for WEBHOOK_SECRET.
 
-### 2. Run the service (Terminal 1)
+### 2. Terminal 1: run the service
 
 Start the webhook receiver locally:
 
@@ -77,10 +76,10 @@ Start the webhook receiver locally:
 make run
 ```
 
-The service will start listening on http://localhost:8000.
+The service will start listening on `http://localhost:8000`.
 > Note: This command runs a long-lived server process and will keep the terminal busy.
 
-### 3. Send a signed webhook request (Terminal 2)
+### 3. Terminal 2: send a signed webhook request
 
 Open a second terminal window in the same repository and run:
 
@@ -89,14 +88,14 @@ make send PAYLOAD=examples/payloads/payment_succeeded.json
 ```
 
 This command:
-- generates a valid request signature using the shared secret from .env
-- sends a sample webhook payload to the local service
+- generates a valid request signature using the shared secret from `.env`;
+- sends a sample webhook payload to the local service.
 
 You should receive a `200 OK` response.
 
 To test other scenarios:
-- duplicate: send the same payload twice (same `event_id`)
-- ignored: `make send PAYLOAD=examples/payloads/unknown_event.json`
+- Duplicate: send the same payload twice (same `event_id`).
+- Ignored: `make send PAYLOAD=examples/payloads/unknown_event.json`.
 
 If something goes wrong, see:
 - [docs/runbook/troubleshooting.md](https://github.com/igor-rosliakov-techwriter/webhook-receiver-onboarding-template/blob/main/docs/runbook/troubleshooting.md)
